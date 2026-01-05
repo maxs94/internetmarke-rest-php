@@ -6,14 +6,14 @@
 
 ### Overview
 
-- chargeWallet
-- createShoppingCart
-- getShoppingCart
-- checkoutShoppingCartAsPng
-- checkoutShoppingCartAsPdf
-- getCatalog
-- getRetoure
-- setRetoure
+- [chargeWallet](#chargewallet)
+- [createShoppingCart](#createshoppingcart)
+- [getShoppingCart](#getshoppingcart)
+- [checkoutShoppingCartAsPng](#checkoutshoppingcartaspng)
+- [checkoutShoppingCartAsPdf](#checkoutshoppingcartaspdf)
+- [getCatalog](#getcatalog)
+- [getRetoure](#getretoure)
+- [setRetoure](#setretoure)
 
 ### Methods
 
@@ -38,6 +38,14 @@ $appResource = $internetmarke->appResource();
  // add 10 cents to wallet
  $appResource->chargeWallet(10);
 ```
+
+#### createShoppingCart
+
+Creates a new shopping cart and returns a ShoppingCart model.
+
+#### getShoppingCart
+
+Retrieve a shopping cart by shopOrderId.
 
 ### checkoutShoppingCartAsPdf / checkoutShoppingCartAsPng
 
@@ -114,5 +122,7 @@ $result = $appResource->getRetoure();
 var_dump($result);
 ```
 
-### setRetoure (implemented, but untested)
+### setRetoure
+
+(implemented, but untested)
 

@@ -57,7 +57,10 @@ use Maxs94\Internetmarke\Config\ClientConfig;
 $guzzle = new Client();
 $authRequest = (new AuthenticationRequest())
     ->setClientId('your-client-id')
-    ->setClientSecret('your-secret');
+    ->setClientSecret('your-secret')
+    ->setUsername('your-internetmarke-username')
+    ->setPassword('your-internetmarke-password')
+;
 
 $config = new ClientConfig(); // or custom baseUri
 $tokenProvider = new TokenProvider($guzzle, $authRequest, $config);

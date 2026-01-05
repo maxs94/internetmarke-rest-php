@@ -65,8 +65,18 @@ final class TokenProvider implements TokenProviderInterface
             $endpoint = rtrim($this->baseUri, '/') . '/' . ltrim($endpoint, '/');
         }
 
+        $formParams = $this->authenticationRequest->toArray();
+
+        // client_id, client_secret, username and password are required
+        if (empty($formParams['client_id']) ||
+            empty($formParams['client_secret']) ||
+            empty($formParams['username']) ||
+            empty($formParams['password'])) {
+            throw new \InvalidArgumentException('Missing required authentication parameters.');
+        }
+
         $response = $this->guzzle->request('POST', $endpoint, [
-            'form_params' => $this->authenticationRequest->toArray(),
+            'form_params' => $formParams,
             'headers' => [
                 'Accept' => 'application/json',
             ],

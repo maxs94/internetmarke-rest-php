@@ -9,7 +9,7 @@ This repository provides:
 - PHPUnit tests.
 
 Highlights of recent changes
-- Base URI for requests is centralized in `ClientConfig` (DRY).
+- Base URI for requests is centralized in `ClientConfig`
 - `ApiClient` implements `ApiClientInterface`.
 - `TokenProvider` implements `TokenProviderInterface`.
 - `AuthenticationRequest` DTO introduced and used by `TokenProvider` and `UserResource`.
@@ -17,11 +17,10 @@ Highlights of recent changes
 - Several classes and tests were adapted to be more testable and type-safe.
 
 Requirements
-- PHP 8.0+ (or the project's required PHP version)
+- PHP 8.1+ (or the project's required PHP version)
 - Composer
 - Guzzle (provided via composer)
 - PHPUnit (dev dependency)
-- make
 
 Installation
 Use the included Make targets to install dependencies:

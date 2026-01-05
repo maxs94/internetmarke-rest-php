@@ -72,11 +72,14 @@ var_dump($internetmarke->getUserResource()->retrieveUserData());
 Run the test suite with the Make targets:
 
 ```bash
-# run unit tests
-make test
-
 # or explicitly run phpunit
 make phpunit
+
+# run static analysis
+make phpstan
+
+# fix coding standards issues
+make csfix
 ```
 
 ### Development notes

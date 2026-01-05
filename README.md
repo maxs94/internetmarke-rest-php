@@ -57,12 +57,12 @@ The simplest way to get started is to use the `Internetmarke` facade class, whic
 ```php
 use Maxs94\Internetmarke\Internetmarke;
 
-$internetmarke = Internetmarke::create([
-    'client_id' => 'your-client-id',
-    'client_secret' => 'your-secret',
-    'username' => 'your-internetmarke-username',
-    'password' => 'your-internetmarke-password',
-]);
+$internetmarke = new Internetmarke(
+    'your-client-id',
+    'your-client-secret',
+    'your-username',
+    'your-password'
+);
 
 // get API version information
 var_dump($internetmarke->getApiVersionResource()->getVersion());

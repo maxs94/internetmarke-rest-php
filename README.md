@@ -103,7 +103,7 @@ make phpunit
 ```
 
 Development notes
-- Prefer `ClientConfig` for all places where a base URI must be configured — it centralizes the setting and preserves DRY.
+- Prefer `ClientConfig` for all places where a base URI must be configured — it centralizes the setting.
 - The `ApiClientInterface` and `TokenProviderInterface` allow you to provide your own implementations for special cases (e.g. custom HTTP adapters, testing).
 - If you need to mock the token provider or API client in tests, mock the interface types (`TokenProviderInterface` and `ApiClientInterface`) instead of final concrete classes.
 

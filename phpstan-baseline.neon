@@ -1,0 +1,4 @@
+parameters:
+  # This is a placeholder baseline file. Generate a real baseline with:
+  # composer phpstan-baseline
+  ignoreErrors: []

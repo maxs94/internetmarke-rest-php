@@ -1,0 +1,7 @@
+/vendor/
+/.idea/
+/.vscode/
+/.env
+/.DS_Store
+/build/
+/coverage/

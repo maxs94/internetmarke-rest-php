@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="vendor/autoload.php"
+    cacheResult="false"
+    executionOrder="random"
+    colors="true"
+    stopOnFailure="false"
+    beStrictAboutTestsThatDoNotTestAnything="false"
+    beStrictAboutOutputDuringTests="false"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+>
+    <testsuites>
+        <testsuite name="Maxs94/Internetmarke Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

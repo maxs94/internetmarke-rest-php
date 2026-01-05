@@ -1,21 +1,21 @@
 # Internetmarke PHP Client
 
-PHP client for the Deutsche Post DHL Internetmarke API.
+## PHP client for the Deutsche Post DHL Internetmarke API.
 
-Links 
+### Links 
 
 - [Internetmarke API Documentation (German)](https://www.dhl.de/de/geschaeftskunden/internetmarke/api.html)
 - [DHL Developer Portal (German)](https://entwickler.dhl.de/)
 - [Portokasse](https://portokasse.deutschepost.de/portokasse/)
 
-This repository provides:
+### This repository provides:
 
 - HTTP client and service-layer classes to call the Internetmarke API.
 - DTO models for request/response payloads.
 - Token provider for OAuth-like authentication.
 - PHPUnit tests.
 
-Highlights of recent changes
+### Highlights of recent changes
 
 - Base URI for requests is centralized in `ClientConfig`
 - `ApiClient` implements `ApiClientInterface`.
@@ -23,15 +23,17 @@ Highlights of recent changes
 - `AuthenticationRequest` DTO introduced and used by `TokenProvider` and `UserResource`.
 - Tests were updated to use `ClientConfig('')` to avoid automatic base URI prefixing during unit tests.
 - Several classes and tests were adapted to be more testable and type-safe.
+- added Makefile for common tasks (install, test, etc.)
+- added Internetmarke facade for easy setup and usage.
 
-Requirements
+### Requirements
 
 - PHP 8.1+ (or the project's required PHP version)
 - Composer
 - client (provided via composer)
 - PHPUnit (dev dependency)
 
-Installation
+### Installation
 
 Use the included Make targets to install dependencies:
 
@@ -42,9 +44,7 @@ make install
 
 (If you prefer running composer directly, `composer install` is equivalent.)
 
-Usage
-
-1) Using the Facade (quick start)
+### Usage
 
 The simplest way to get started is to use the `Internetmarke` facade class, which handles configuration, token provision, and API client setup for you:
 
@@ -67,11 +67,7 @@ var_dump($internetmarke->getUserResource()->retrieveUserData());
 ```
 
 
-Notes on URIs
-- If you pass relative URIs to service methods (e.g. `'user'`, `'app/wallet'`), the `ApiClient` will prefix them with the base URI from `ClientConfig`.
-- If you pass an absolute URI (starting with `http://` or `https://`), the `ApiClient` will use it unchanged.
-
-Testing
+### Testing
 
 Run the test suite with the Make targets:
 
@@ -83,18 +79,19 @@ make test
 make phpunit
 ```
 
-Development notes
+### Development notes
 
 - Prefer `ClientConfig` for all places where a base URI must be configured — it centralizes the setting.
 - The `ApiClientInterface` and `TokenProviderInterface` allow you to provide your own implementations for special cases (e.g. custom HTTP adapters, testing).
 - If you need to mock the token provider or API client in tests, mock the interface types (`TokenProviderInterface` and `ApiClientInterface`) instead of final concrete classes.
 
-Contributing
+### Contributing
 
-- Fork the repo, create a branch, add tests for any new behavior, and open a pull request.
+- Fork the repo, create a branch, add tests for any new behavior and open a pull request.
 - Keep backward-compatibility in mind; update the README and tests when making breaking changes.
-
-License
+- Run `make phpunit`, `make csfix` and `make phpstan` before submitting a PR - they should pass without errors.
+ 
+### License
 
 - Please see the LICENSE file in the repository.
 

@@ -76,6 +76,8 @@ var_dump($internetmarke->getUserResource()->getUserProfile());
 
 ```
 
+### Creating a label
+To create and checkout a label, see the [AppResource documentation](doc/AppResource.md) for details and code examples.
 
 ### Testing
 

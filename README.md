@@ -34,63 +34,27 @@ make install
 
 Usage
 
-1) Centralized configuration
-Use `ClientConfig` to configure the API base URI (defaults to the DHL Internetmarke URL). Passing a `ClientConfig` instance to both `TokenProvider` and `ApiClient` ensures a single place to configure the base URI:
+1) Using the Facade (quick start)
+The simplest way to get started is to use the `Internetmarke` facade class, which handles configuration, token provision, and API client setup for you:
 
 ```php
-use Maxs94\Internetmarke\Config\ClientConfig;
+use Maxs94\Internetmarke\Internetmarke;
 
-$config = new ClientConfig(); // uses default DHL base URI
-// or for staging/custom:
-$staging = new ClientConfig('https://staging.example.local/im/v1');
-```
-
-2) Obtain a token (TokenProvider)
-Create an `AuthenticationRequest` DTO with credentials and construct the `TokenProvider`:
-
-```php
-use GuzzleHttp\Client;
-use Maxs94\Internetmarke\Authentication\TokenProvider;
-use Maxs94\Internetmarke\Model\AuthenticationRequest;
-use Maxs94\Internetmarke\Config\ClientConfig;
-
-$client = new Client();
-$authRequest = (new AuthenticationRequest())
-    ->setClientId('your-client-id')
-    ->setClientSecret('your-secret')
-    ->setUsername('your-internetmarke-username')
-    ->setPassword('your-internetmarke-password')
-;
-
-$config = new ClientConfig(); // or custom baseUri
-$tokenProvider = new TokenProvider($client, $authRequest, $config);
-
-// get token
-$accessToken = $tokenProvider->getAccessToken();
-```
-
-3) Create ApiClient and call services
-ApiClient requires a `TokenProviderInterface` implementation (the included `TokenProvider` implements it):
-
-```php
-use Maxs94\Internetmarke\Http\ApiClient;
-use Maxs94\Internetmarke\Config\ClientConfig;
-
-// $client and $tokenProvider from above
-$apiClient = new ApiClient($client, $tokenProvider, $config);
-
-// Use service classes (they depend on ApiClientInterface)
-$userService = new \Maxs94\Internetmarke\Service\UserResource($apiClient);
-
-$userData = $userService->retrieveUserData();
-var_dump($userData);
+$internetmarke = Internetmarke::create([
+    'client_id' => 'your-client-id',
+    'client_secret' => 'your-secret',
+    'username' => 'your-internetmarke-username',
+    'password' => 'your-internetmarke-password',
+]);
 
 // walletBalance can be retrieved from the tokenProvider,
 // as DHL includes it in the authentication response
-var_dump($tokenProvider->getAuthentication()->getWalletBalance());
+var_dump($internetmarke->getTokenProvider()->getAuthentication()->getWalletBalance());
 
-
+// get user profile
+var_dump($internetmarke->getUserResource()->retrieveUserData());
 ```
+
 
 Notes on URIs
 - If you pass relative URIs to service methods (e.g. `'user'`, `'app/wallet'`), the `ApiClient` will prefix them with the base URI from `ClientConfig`.

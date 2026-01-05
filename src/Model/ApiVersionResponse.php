@@ -55,6 +55,7 @@ final class ApiVersionResponse
 
         return $this;
     }
+
     public function getRev(): ?string
     {
         return $this->rev;

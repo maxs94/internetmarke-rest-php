@@ -6,13 +6,13 @@ namespace Maxs94\Internetmarke;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use Maxs94\Internetmarke\Config\ClientConfig;
 use Maxs94\Internetmarke\Authentication\TokenProvider;
-use Maxs94\Internetmarke\Model\AuthenticationRequest;
+use Maxs94\Internetmarke\Config\ClientConfig;
 use Maxs94\Internetmarke\Http\ApiClient;
-use Maxs94\Internetmarke\Service\UserResource;
+use Maxs94\Internetmarke\Model\AuthenticationRequest;
 use Maxs94\Internetmarke\Service\ApiVersionResource;
 use Maxs94\Internetmarke\Service\AppResource;
+use Maxs94\Internetmarke\Service\UserResource;
 
 final class Internetmarke
 {

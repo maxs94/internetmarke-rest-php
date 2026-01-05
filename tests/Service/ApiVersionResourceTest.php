@@ -24,9 +24,11 @@ final class ApiVersionResourceTest extends TestCase
     public function testApiVersionReturnsParsedDto(): void
     {
         $payload = json_encode([
-            'env' => 'production',
-            'version' => '1.2.3',
-            'description' => 'API v1',
+            'amp' => [
+                'env' => 'production',
+                'version' => '1.2.3',
+                'description' => 'API v1',
+            ],
         ]);
 
         $stream = $this->createMock(StreamInterface::class);
@@ -78,7 +80,7 @@ final class ApiVersionResourceTest extends TestCase
 
         $service = new ApiVersionResource($apiClient);
 
-        $dto = $service->apiVersion();
+        $dto = $service->getVersion();
 
         $this->assertInstanceOf(ApiVersionResponse::class, $dto);
         $arr = $dto->toArray();

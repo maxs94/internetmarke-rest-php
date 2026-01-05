@@ -58,12 +58,16 @@ $internetmarke = Internetmarke::create([
     'password' => 'your-internetmarke-password',
 ]);
 
+// get API version information
+var_dump($internetmarke->getApiVersionResource()->getVersion());
+
 // walletBalance can be retrieved from the tokenProvider,
 // as DHL includes it in the authentication response
 var_dump($internetmarke->getTokenProvider()->getAuthentication()->getWalletBalance());
 
 // get user profile
 var_dump($internetmarke->getUserResource()->getUserProfile());
+
 ```
 
 

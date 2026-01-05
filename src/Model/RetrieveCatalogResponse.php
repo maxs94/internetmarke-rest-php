@@ -6,6 +6,9 @@ namespace Maxs94\Internetmarke\Model;
 
 final class RetrieveCatalogResponse
 {
+    public const TYPE_PUBLIC = 'PUBLIC';
+    public const TYPE_PAGE_FORMATS = 'PAGE_FORMATS';
+
     private ?PrivateCatalog $privateCatalog = null;
     private ?PublicCatalog $publicCatalog = null;
 
@@ -74,11 +77,11 @@ final class RetrieveCatalogResponse
     public static function fromArray(array $data): self
     {
         $self = new self();
-        if (!empty($data['privateCatalog'])) {
-            $self->setPrivateCatalog(PrivateCatalog::fromArray((array) $data['privateCatalog']));
+        if (!empty($data['privateGallery'])) {
+            $self->setPrivateCatalog(PrivateCatalog::fromArray((array) $data['privateGallery']));
         }
-        if (!empty($data['publicCatalog'])) {
-            $self->setPublicCatalog(PublicCatalog::fromArray((array) $data['publicCatalog']));
+        if (!empty($data['publicGallery'])) {
+            $self->setPublicCatalog(PublicCatalog::fromArray((array) $data['publicGallery']));
         }
         $formats = $data['pageFormats'] ?? $data['page_formats'] ?? [];
         if (is_array($formats)) {
@@ -100,11 +103,17 @@ final class RetrieveCatalogResponse
      */
     public function toArray(): array
     {
-        return [
-            'privateCatalog' => $this->privateCatalog?->toArray(),
-            'publicCatalog' => $this->publicCatalog?->toArray(),
-            'pageFormats' => array_map(fn (PageFormat $p) => $p->toArray(), $this->pageFormats),
-            'contractProducts' => $this->contractProducts?->toArray(),
+        $result = [
+            'privateCatalog' => $this->getPrivateCatalog()?->toArray(),
+            'publicCatalog' => $this->getPublicCatalog()?->toArray(),
+            'contractProducts' => $this->getContractProducts()?->toArray(),
         ];
+
+        $formats = $this->getPageFormats();
+        if (!empty($formats)) {
+            $result['pageFormats'] = array_map(fn (PageFormat $p) => $p->toArray(), $formats);
+        }
+
+        return $result;
     }
 }

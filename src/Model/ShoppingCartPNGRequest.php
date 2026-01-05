@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
-final class AppShoppingCartPNGRequest
+final class ShoppingCartPNGRequest
 {
+    public const TYPE = 'AppShoppingCartPNGRequest';
+    public const POSITION_TYPE = 'AppShoppingCartPosition';
+
     private ?string $shopOrderId = null;
     private ?int $total = null;
-    private ?bool $createManifest = null;
-    private ?string $createShippingList = null;
-    private ?string $dpi = null;
-    private ?bool $optimizePNG = null;
+    private ?bool $createManifest = true;
+    private int $createShippingList = 0;
+    private ?string $dpi = 'DPI300';
+    private ?bool $optimizePNG = true;
+    private ?string $type = self::TYPE;
 
-    /** @var AppShoppingCartPosition[] */
+    /** @var ShoppingCartPosition[] */
     private array $positions = [];
-
-    private ?string $type = null;
 
     public function setShopOrderId(?string $id): self
     {
@@ -54,14 +56,14 @@ final class AppShoppingCartPNGRequest
         return $this->createManifest;
     }
 
-    public function setCreateShippingList(?string $value): self
+    public function setCreateShippingList(int $value): self
     {
         $this->createShippingList = $value;
 
         return $this;
     }
 
-    public function getCreateShippingList(): ?string
+    public function getCreateShippingList(): int
     {
         return $this->createShippingList;
     }
@@ -91,17 +93,21 @@ final class AppShoppingCartPNGRequest
     }
 
     /**
-     * @param AppShoppingCartPosition[] $positions
+     * @param ShoppingCartPosition[] $positions
      */
     public function setPositions(array $positions): self
     {
         $this->positions = $positions;
 
+        foreach ($this->positions as $position) {
+            $position->setPositionType(self::POSITION_TYPE);
+        }
+
         return $this;
     }
 
     /**
-     * @return AppShoppingCartPosition[]
+     * @return ShoppingCartPosition[]
      */
     public function getPositions(): array
     {
@@ -136,7 +142,7 @@ final class AppShoppingCartPNGRequest
         if (is_array($positions)) {
             $items = [];
             foreach ($positions as $p) {
-                $items[] = AppShoppingCartPosition::fromArray((array) $p);
+                $items[] = ShoppingCartPosition::fromArray((array) $p);
             }
             $self->setPositions($items);
         }
@@ -157,7 +163,7 @@ final class AppShoppingCartPNGRequest
             'createShippingList' => $this->createShippingList,
             'dpi' => $this->dpi,
             'optimizePNG' => $this->optimizePNG,
-            'positions' => array_map(fn (AppShoppingCartPosition $p) => $p->toArray(), $this->positions),
+            'positions' => array_map(fn (ShoppingCartPosition $p) => $p->toArray(), $this->positions),
             'type' => $this->type,
         ];
     }

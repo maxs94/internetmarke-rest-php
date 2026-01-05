@@ -68,10 +68,10 @@ final class TokenProvider implements TokenProviderInterface
         $formParams = $this->authenticationRequest->toArray();
 
         // client_id, client_secret, username and password are required
-        if (empty($formParams['client_id']) ||
-            empty($formParams['client_secret']) ||
-            empty($formParams['username']) ||
-            empty($formParams['password'])) {
+        if (empty($formParams['client_id'])
+            || empty($formParams['client_secret'])
+            || empty($formParams['username'])
+            || empty($formParams['password'])) {
             throw new \InvalidArgumentException('Missing required authentication parameters.');
         }
 

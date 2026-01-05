@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
-final class AppShoppingCartPosition
+final class ShoppingCartPosition
 {
     private ?int $productCode = null;
     private ?int $imageID = null;
-    private ?AddressBinding $address = null;
+    private ?Address $sender = null;
+    private ?Address $receiver = null;
     private ?string $voucherLayout = null;
     private ?string $positionType = null;
+    private ?Position $position = null;
 
     public function setProductCode(?int $code): self
     {
@@ -36,16 +38,28 @@ final class AppShoppingCartPosition
         return $this->imageID;
     }
 
-    public function setAddress(?AddressBinding $address): self
+    public function setSender(?Address $address): self
     {
-        $this->address = $address;
+        $this->sender = $address;
 
         return $this;
     }
 
-    public function getAddress(): ?AddressBinding
+    public function getSender(): ?Address
     {
-        return $this->address;
+        return $this->sender;
+    }
+
+    public function setReceiver(?Address $address): self
+    {
+        $this->receiver = $address;
+
+        return $this;
+    }
+
+    public function getReceiver(): ?Address
+    {
+        return $this->receiver;
     }
 
     public function setVoucherLayout(?string $layout): self
@@ -72,6 +86,18 @@ final class AppShoppingCartPosition
         return $this->positionType;
     }
 
+    public function setPosition(?Position $position): self
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function getPosition(): ?Position
+    {
+        return $this->position;
+    }
+
     /**
      * @param array<string,mixed> $data
      */
@@ -80,11 +106,18 @@ final class AppShoppingCartPosition
         $self = new self();
         $self->setProductCode(isset($data['productCode']) ? (int) $data['productCode'] : (isset($data['product_code']) ? (int) $data['product_code'] : null));
         $self->setImageID(isset($data['imageID']) ? (int) $data['imageID'] : (isset($data['image_id']) ? (int) $data['image_id'] : null));
-        if (!empty($data['address'])) {
-            $self->setAddress(AddressBinding::fromArray((array) $data['address']));
+        if (!empty($data['sender'])) {
+            $self->setSender(Address::fromArray((array) $data['sender']));
+        }
+        if (!empty($data['receiver'])) {
+            $self->setreceiver(Address::fromArray((array) $data['receiver']));
         }
         $self->setVoucherLayout($data['voucherLayout'] ?? $data['voucher_layout'] ?? null);
         $self->setPositionType($data['positionType'] ?? $data['position_type'] ?? null);
+
+        if (!empty($data['position'])) {
+            $self->setPosition(Position::fromArray((array) $data['position']));
+        }
 
         return $self;
     }
@@ -94,12 +127,21 @@ final class AppShoppingCartPosition
      */
     public function toArray(): array
     {
-        return [
+        $data = [
             'productCode' => $this->productCode,
             'imageID' => $this->imageID,
-            'address' => $this->address?->toArray(),
+            'address' => [
+                'sender' => $this->sender ? $this->sender->toArray() : null,
+                'receiver' => $this->receiver ? $this->receiver->toArray() : null,
+            ],
             'voucherLayout' => $this->voucherLayout,
             'positionType' => $this->positionType,
         ];
+
+        if ($this->position !== null) {
+            $data['position'] = $this->position->toArray();
+        }
+
+        return $data;
     }
 }

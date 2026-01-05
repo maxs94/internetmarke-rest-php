@@ -63,7 +63,7 @@ $internetmarke = Internetmarke::create([
 var_dump($internetmarke->getTokenProvider()->getAuthentication()->getWalletBalance());
 
 // get user profile
-var_dump($internetmarke->getUserResource()->retrieveUserData());
+var_dump($internetmarke->getUserResource()->getUserProfile());
 ```
 
 

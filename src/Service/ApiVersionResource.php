@@ -4,20 +4,14 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Service;
 
-use Maxs94\Internetmarke\Http\ApiClientInterface;
 use Maxs94\Internetmarke\Model\ApiVersionResponse;
 
 final class ApiVersionResource extends AbstractService
 {
-    public function __construct(ApiClientInterface $apiClient)
-    {
-        parent::__construct($apiClient);
-    }
-
     /**
      * GET /
      */
-    public function apiVersion(): ApiVersionResponse
+    public function getVersion(): ApiVersionResponse
     {
         $response = $this->apiClient->get('/');
 

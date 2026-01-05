@@ -82,12 +82,9 @@ $apiClient = new ApiClient($guzzle, $tokenProvider, $config);
 // Use service classes (they depend on ApiClientInterface)
 $userService = new \Maxs94\Internetmarke\Service\UserResource($apiClient);
 
-// Build AuthenticationRequest DTO and call authorization
-$authReq = (new \Maxs94\Internetmarke\Model\AuthenticationRequest())
-    ->setClientId('your-client-id')
-    ->setClientSecret('your-secret');
+$userData = $userService->retrieveUserData();
+var_dump($userData);
 
-$authResponse = $userService->authorization($authReq);
 ```
 
 Notes on URIs

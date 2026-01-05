@@ -8,9 +8,15 @@
 - [DHL Developer Portal (German)](https://entwickler.dhl.de/)
 - [Portokasse](https://portokasse.deutschepost.de/portokasse/)
 
+### Documentation
+
+- [AppResource](doc/AppResource.md)
+- [ApiVersionResource](doc/ApiVersionResource.md)
+- [UserResource](doc/UserResource.md)
+
 ### This repository provides:
 
-- HTTP client and service-layer classes to call the Internetmarke API.
+- HTTP client and service-layer classes to call the Internetmarke API. See documentation: [AppResource](doc/AppResource.md), [ApiVersionResource](doc/ApiVersionResource.md), [UserResource](doc/UserResource.md).
 - DTO models for request/response payloads.
 - Token provider for OAuth-like authentication.
 - PHPUnit tests.

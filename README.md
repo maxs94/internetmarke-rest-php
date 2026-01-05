@@ -19,7 +19,7 @@ Highlights of recent changes
 Requirements
 - PHP 8.1+ (or the project's required PHP version)
 - Composer
-- Guzzle (provided via composer)
+- client (provided via composer)
 - PHPUnit (dev dependency)
 
 Installation
@@ -54,7 +54,7 @@ use Maxs94\Internetmarke\Authentication\TokenProvider;
 use Maxs94\Internetmarke\Model\AuthenticationRequest;
 use Maxs94\Internetmarke\Config\ClientConfig;
 
-$guzzle = new Client();
+$client = new Client();
 $authRequest = (new AuthenticationRequest())
     ->setClientId('your-client-id')
     ->setClientSecret('your-secret')
@@ -63,7 +63,7 @@ $authRequest = (new AuthenticationRequest())
 ;
 
 $config = new ClientConfig(); // or custom baseUri
-$tokenProvider = new TokenProvider($guzzle, $authRequest, $config);
+$tokenProvider = new TokenProvider($client, $authRequest, $config);
 
 // get token
 $accessToken = $tokenProvider->getAccessToken();
@@ -76,14 +76,19 @@ ApiClient requires a `TokenProviderInterface` implementation (the included `Toke
 use Maxs94\Internetmarke\Http\ApiClient;
 use Maxs94\Internetmarke\Config\ClientConfig;
 
-// $guzzle and $tokenProvider from above
-$apiClient = new ApiClient($guzzle, $tokenProvider, $config);
+// $client and $tokenProvider from above
+$apiClient = new ApiClient($client, $tokenProvider, $config);
 
 // Use service classes (they depend on ApiClientInterface)
 $userService = new \Maxs94\Internetmarke\Service\UserResource($apiClient);
 
 $userData = $userService->retrieveUserData();
 var_dump($userData);
+
+// walletBalance can be retrieved from the tokenProvider,
+// as DHL includes it in the authentication response
+var_dump($tokenProvider->getAuthentication()->getWalletBalance());
+
 
 ```
 

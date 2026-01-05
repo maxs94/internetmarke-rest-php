@@ -115,19 +115,3 @@ Contributing
 License
 - Please see the LICENSE file in the repository.
 
-Sample Makefile
-If the repository does not include a Makefile, here is a minimal example you can add at the project root to enable the commands used above:
-
-```makefile
-# Makefile (place at project root)
-
-install:
-	@composer install --no-interaction
-
-phpunit:
-	@./vendor/bin/phpunit --configuration phpunit.xml
-
-test: phpunit
-```
-
-If you want, I can add this Makefile to the repository as well.

@@ -1,14 +1,22 @@
 # Internetmarke PHP Client
 
-PHP client for the DHL Internetmarke API.
+PHP client for the Deutsche Post DHL Internetmarke API.
+
+Links 
+
+- [Internetmarke API Documentation (German)](https://www.dhl.de/de/geschaeftskunden/internetmarke/api.html)
+- [DHL Developer Portal (German)](https://entwickler.dhl.de/)
+- [Portokasse](https://portokasse.deutschepost.de/portokasse/)
 
 This repository provides:
+
 - HTTP client and service-layer classes to call the Internetmarke API.
 - DTO models for request/response payloads.
 - Token provider for OAuth-like authentication.
 - PHPUnit tests.
 
 Highlights of recent changes
+
 - Base URI for requests is centralized in `ClientConfig`
 - `ApiClient` implements `ApiClientInterface`.
 - `TokenProvider` implements `TokenProviderInterface`.
@@ -17,12 +25,14 @@ Highlights of recent changes
 - Several classes and tests were adapted to be more testable and type-safe.
 
 Requirements
+
 - PHP 8.1+ (or the project's required PHP version)
 - Composer
 - client (provided via composer)
 - PHPUnit (dev dependency)
 
 Installation
+
 Use the included Make targets to install dependencies:
 
 ```bash
@@ -35,6 +45,7 @@ make install
 Usage
 
 1) Using the Facade (quick start)
+
 The simplest way to get started is to use the `Internetmarke` facade class, which handles configuration, token provision, and API client setup for you:
 
 ```php
@@ -61,6 +72,7 @@ Notes on URIs
 - If you pass an absolute URI (starting with `http://` or `https://`), the `ApiClient` will use it unchanged.
 
 Testing
+
 Run the test suite with the Make targets:
 
 ```bash
@@ -72,14 +84,17 @@ make phpunit
 ```
 
 Development notes
+
 - Prefer `ClientConfig` for all places where a base URI must be configured — it centralizes the setting.
 - The `ApiClientInterface` and `TokenProviderInterface` allow you to provide your own implementations for special cases (e.g. custom HTTP adapters, testing).
 - If you need to mock the token provider or API client in tests, mock the interface types (`TokenProviderInterface` and `ApiClientInterface`) instead of final concrete classes.
 
 Contributing
+
 - Fork the repo, create a branch, add tests for any new behavior, and open a pull request.
 - Keep backward-compatibility in mind; update the README and tests when making breaking changes.
 
 License
+
 - Please see the LICENSE file in the repository.
 

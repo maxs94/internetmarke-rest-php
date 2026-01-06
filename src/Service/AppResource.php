@@ -109,13 +109,23 @@ final class AppResource extends AbstractService
     /**
      * GET /app/catalog?types=...
      */
-    public function getCatalog(string $type): RetrieveCatalogResponse
+    public function getCatalog(string $types): RetrieveCatalogResponse
     {
-        $response = $this->apiClient->get('app/catalog/' . rawurlencode($type));
+        $response = $this->apiClient->get('app/catalog', null, ['query' => ['types' => $types]]);
 
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 
         return RetrieveCatalogResponse::fromArray($data);
+    }
+
+    /**
+     * Compatibility wrapper used by older consumers/tests.
+     *
+     * @param array<int,string> $types
+     */
+    public function retrieveCatalogApp(array $types): RetrieveCatalogResponse
+    {
+        return $this->getCatalog($types);
     }
 }

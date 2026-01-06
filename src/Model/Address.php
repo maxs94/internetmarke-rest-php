@@ -52,7 +52,11 @@ final class Address
 
     public function setAddressLine2(?string $line): self
     {
-        $this->addressLine2 = trim($line);
+        if ($line !== null) {
+            $line = trim($line);
+        }
+
+        $this->addressLine2 = $line;
 
         return $this;
     }
@@ -128,11 +132,11 @@ final class Address
             'country' => $this->country,
         ];
 
-        if ($this->additionalName !== null) {
+        if (!empty($this->additionalName)) {
             $data['additionalName'] = $this->additionalName;
         }
 
-        if ($this->addressLine2 !== null) {
+        if (!empty($this->addressLine2)) {
             $data['addressLine2'] = $this->addressLine2;
         }
 

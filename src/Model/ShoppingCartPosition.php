@@ -145,7 +145,7 @@ final class ShoppingCartPosition
             'voucherLayout' => $this->voucherLayout,
         ];
 
-        if ($this->imageID !== null) {
+        if (!empty($this->imageID)) {
             $data['imageID'] = $this->imageID;
         }
 

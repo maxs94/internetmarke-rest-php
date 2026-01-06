@@ -129,14 +129,20 @@ final class ShoppingCartPosition
     {
         $data = [
             'productCode' => $this->productCode,
-            'imageID' => $this->imageID,
             'address' => [
                 'sender' => $this->sender ? $this->sender->toArray() : null,
                 'receiver' => $this->receiver ? $this->receiver->toArray() : null,
             ],
-            'voucherLayout' => $this->voucherLayout,
             'positionType' => $this->positionType,
         ];
+
+        if ($this->voucherLayout !== null) {
+            $data['voucherLayout'] = $this->voucherLayout;
+        }
+
+        if ($this->imageID !== null) {
+            $data['imageID'] = $this->imageID;
+        }
 
         if ($this->position !== null) {
             $data['position'] = $this->position->toArray();

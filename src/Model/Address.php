@@ -120,14 +120,22 @@ final class Address
      */
     public function toArray(): array
     {
-        return [
+        $data = [
             'name' => $this->name,
-            'additionalName' => $this->additionalName,
             'addressLine1' => $this->addressLine1,
-            'addressLine2' => $this->addressLine2,
             'postalCode' => $this->postalCode,
             'city' => $this->city,
             'country' => $this->country,
         ];
+
+        if ($this->additionalName !== null) {
+            $data['additionalName'] = $this->additionalName;
+        }
+
+        if ($this->addressLine2 !== null) {
+            $data['addressLine2'] = $this->addressLine2;
+        }
+
+        return $data;
     }
 }

@@ -118,14 +118,4 @@ final class AppResource extends AbstractService
 
         return RetrieveCatalogResponse::fromArray($data);
     }
-
-    /**
-     * Compatibility wrapper used by older consumers/tests.
-     *
-     * @param array<int,string> $types
-     */
-    public function retrieveCatalogApp(array $types): RetrieveCatalogResponse
-    {
-        return $this->getCatalog($types);
-    }
 }

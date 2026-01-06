@@ -47,14 +47,14 @@ Creates a new shopping cart and returns a ShoppingCart model.
 
 Retrieve a shopping cart by shopOrderId.
 
-### checkoutShoppingCartAsPdf / checkoutShoppingCartAsPng
+### checkoutShoppingCartAsPDF / checkoutShoppingCartAsPNG
 
 ```php
 // create shopping cart
 $shoppingCart = $appResource->createShoppingCart();
 
 // create checkout request
-$request = new ShoppingCartPDFRequest();
+$request = new ShoppingCartPDFRequest();        // or ShoppingCartPNGRequest();
 $request->setShopOrderId($shoppingCart->getShopOrderId());
 $request->setTotal(95); // total amount in cents - needs to match the total of all positions, you will need to calculate this yourself for now
 
@@ -87,7 +87,7 @@ $recipient->setCity('Berlin');
 $recipient->setCountry('DEU');
 $cartPosition->setReceiver($recipient);
 
-$result = $appResource->checkoutShoppingCartAsPdf($request);
+$result = $appResource->checkoutShoppingCartAsPDF($request);    // or checkoutShoppingCartAsPNG($request);
 var_dump($result);
 
 // get download link to PDF or PNG for the label

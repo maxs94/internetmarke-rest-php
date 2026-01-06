@@ -17,6 +17,11 @@ final class ShoppingCartPosition
     private ?string $positionType = null;
     private ?Position $position = null;
 
+    public function __construct()
+    {
+        $this->position = new Position(1, 1, 1);
+    }
+
     public function setProductCode(?int $code): self
     {
         $this->productCode = $code;

@@ -6,11 +6,14 @@ namespace Maxs94\Internetmarke\Model;
 
 final class ShoppingCartPosition
 {
+    public const VOUCHER_LAYOUT_ADDRESS_ZONE = 'ADDRESS_ZONE';
+    public const VOUCHER_LAYOUT_FRANKING_ZONE = 'FRANKING_ZONE';
+
     private ?int $productCode = null;
     private ?int $imageID = null;
     private ?Address $sender = null;
     private ?Address $receiver = null;
-    private ?string $voucherLayout = null;
+    private ?string $voucherLayout = self::VOUCHER_LAYOUT_ADDRESS_ZONE;
     private ?string $positionType = null;
     private ?Position $position = null;
 
@@ -134,11 +137,8 @@ final class ShoppingCartPosition
                 'receiver' => $this->receiver ? $this->receiver->toArray() : null,
             ],
             'positionType' => $this->positionType,
+            'voucherLayout' => $this->voucherLayout,
         ];
-
-        if ($this->voucherLayout !== null) {
-            $data['voucherLayout'] = $this->voucherLayout;
-        }
 
         if ($this->imageID !== null) {
             $data['imageID'] = $this->imageID;

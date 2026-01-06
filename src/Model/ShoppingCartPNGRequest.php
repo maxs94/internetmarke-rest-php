@@ -7,13 +7,22 @@ namespace Maxs94\Internetmarke\Model;
 final class ShoppingCartPNGRequest
 {
     public const TYPE = 'AppShoppingCartPNGRequest';
+    public const TYPE_PREVIEW = 'AppShoppingCartPreviewPNGRequest';
+
     public const POSITION_TYPE = 'AppShoppingCartPosition';
+
+    public const DPI300 = 'DPI300';
+    public const DPI203 = 'DPI203';
+
+    public const CREATE_SHIPPING_LIST_NONE = 0;
+    public const CREATE_SHIPPING_LIST_WITHOUT_ADDRESS = 1;
+    public const CREATE_SHIPPING_LIST_WITH_ADDRESS = 2;
 
     private ?string $shopOrderId = null;
     private ?int $total = null;
     private ?bool $createManifest = true;
-    private int $createShippingList = 0;
-    private ?string $dpi = 'DPI300';
+    private int $createShippingList = self::CREATE_SHIPPING_LIST_NONE;
+    private ?string $dpi = self::DPI300;
     private ?bool $optimizePNG = true;
     private ?string $type = self::TYPE;
 

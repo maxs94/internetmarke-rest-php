@@ -29,7 +29,7 @@ $internetmarke = new Internetmarke(
     'your-password'
 );
 
-$appResource = $internetmarke->appResource();
+$appResource = $internetmarke->getAppResource();
 ```
 
 #### chargeWallet

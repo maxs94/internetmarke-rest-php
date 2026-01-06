@@ -107,29 +107,15 @@ final class AppResource extends AbstractService
     }
 
     /**
-     * GET /app/catalog?types[]=...
-     *
-     * Backwards-compatible getCatalog accepts an array of types; prefer retrieveCatalogApp which matches tests.
-     *
-     * @param array<int,string> $types
+     * GET /app/catalog?types=...
      */
-    public function getCatalog(array $types): RetrieveCatalogResponse
+    public function getCatalog(string $type): RetrieveCatalogResponse
     {
-        $response = $this->apiClient->get('app/catalog', null, ['query' => ['types' => $types]]);
+        $response = $this->apiClient->get('app/catalog/' . rawurlencode($type));
 
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 
         return RetrieveCatalogResponse::fromArray($data);
-    }
-
-    /**
-     * Compatibility wrapper used by older consumers/tests.
-     *
-     * @param array<int,string> $types
-     */
-    public function retrieveCatalogApp(array $types): RetrieveCatalogResponse
-    {
-        return $this->getCatalog($types);
     }
 }

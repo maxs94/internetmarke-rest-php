@@ -40,7 +40,7 @@ final class Address
 
     public function setAddressLine1(string $line): self
     {
-        $this->addressLine1 = $line;
+        $this->addressLine1 = trim($line);
 
         return $this;
     }
@@ -52,7 +52,7 @@ final class Address
 
     public function setAddressLine2(?string $line): self
     {
-        $this->addressLine2 = $line;
+        $this->addressLine2 = trim($line);
 
         return $this;
     }
@@ -64,7 +64,7 @@ final class Address
 
     public function setPostalCode(string $code): self
     {
-        $this->postalCode = $code;
+        $this->postalCode = trim($code);
 
         return $this;
     }
@@ -76,7 +76,7 @@ final class Address
 
     public function setCity(string $city): self
     {
-        $this->city = $city;
+        $this->city = trim($city);
 
         return $this;
     }
@@ -88,7 +88,7 @@ final class Address
 
     public function setCountry(string $country): self
     {
-        $this->country = $country;
+        $this->country = trim($country);
 
         return $this;
     }

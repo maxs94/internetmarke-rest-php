@@ -15,7 +15,7 @@ abstract class AbstractService
 
     public function __construct(
         ApiClientInterface $apiClient,
-        protected readonly LoggerInterface $logger,
+        protected readonly ?LoggerInterface $logger,
     ) {
         $this->apiClient = $apiClient;
     }
@@ -55,6 +55,18 @@ abstract class AbstractService
         if (!in_array($code, $allowed, true)) {
             $body = (string) $response->getBody();
             throw new ApiException(sprintf('Unexpected status code %d: %s', $code, $body), $code);
+        }
+    }
+
+    /**
+     * Log a debug message if logger is available.
+     *
+     * @param array<string,mixed> $context
+     */
+    protected function log(string $message, array $context = []): void
+    {
+        if ($this->logger !== null) {
+            $this->logger->debug($message, $context);
         }
     }
 }

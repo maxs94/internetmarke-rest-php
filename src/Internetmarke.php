@@ -31,9 +31,9 @@ final class Internetmarke
         string $clientSecret,
         string $username,
         string $password,
-        private readonly LoggerInterface $logger,
         ?ClientConfig $config = null,
         ?ClientInterface $guzzle = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
         $this->config = $config ?? new ClientConfig();
         $this->guzzle = $guzzle ?? new Client(['base_uri' => $this->config->getBaseUri()]);

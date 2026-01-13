@@ -22,6 +22,11 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->put('app/wallet', null, ['query' => ['amount' => $amount]]);
 
+        $this->log('chargeWallet response', [
+            'status' => $response->getStatusCode(),
+            'body' => (string) $response->getBody(),
+        ]);
+
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 
@@ -35,7 +40,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->post('app/shoppingcart');
 
-        $this->logger->debug('createShoppingCart response', [
+        $this->log('createShoppingCart response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);
@@ -53,7 +58,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->post('app/shoppingcart/pdf', $request);
 
-        $this->logger->debug('checkoutShoppingCartAsPDF response', [
+        $this->log('checkoutShoppingCartAsPDF response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);
@@ -71,7 +76,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->post('app/shoppingcart/png', $request);
 
-        $this->logger->debug('checkoutShoppingCartAsPNG response', [
+        $this->log('checkoutShoppingCartAsPNG response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);
@@ -89,7 +94,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->get('app/shoppingcart/' . rawurlencode((string) $shopOrderId));
 
-        $this->logger->debug('getShoppingCart response', [
+        $this->log('getShoppingCart response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);
@@ -107,7 +112,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->get('app/retoure');
 
-        $this->logger->debug('getRetoure response', [
+        $this->log('getRetoure response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);
@@ -125,7 +130,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->post('app/retoure', $request);
 
-        $this->logger->debug('setRetoure response', [
+        $this->log('setRetoure response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);
@@ -143,7 +148,7 @@ final class AppResource extends AbstractService
     {
         $response = $this->apiClient->get('app/catalog', null, ['query' => ['types' => $types]]);
 
-        $this->logger->debug('getCatalog response', [
+        $this->log('getCatalog response', [
             'status' => $response->getStatusCode(),
             'body' => (string) $response->getBody(),
         ]);

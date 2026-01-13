@@ -23,7 +23,7 @@ final class InternetmarkeTest extends TestCase
         $config = new ClientConfig('');
         $logger = $this->createMock(LoggerInterface::class);
 
-        $api = new Internetmarke('cid', 'sec', 'user', 'pass', $logger, $config, $guzzle);
+        $api = new Internetmarke('cid', 'sec', 'user', 'pass', $config, $guzzle, $logger);
 
         $this->assertInstanceOf(UserResource::class, $api->getUserResource());
         $this->assertInstanceOf(ApiVersionResource::class, $api->getApiVersionResource());

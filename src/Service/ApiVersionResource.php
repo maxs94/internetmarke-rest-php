@@ -15,6 +15,11 @@ final class ApiVersionResource extends AbstractService
     {
         $response = $this->apiClient->get('/');
 
+        $this->log('getVersion response', [
+            'status' => $response->getStatusCode(),
+            'body' => (string) $response->getBody(),
+        ]);
+
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 

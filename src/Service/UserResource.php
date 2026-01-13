@@ -20,6 +20,11 @@ final class UserResource extends AbstractService
     {
         $response = $this->apiClient->get('user/profile');
 
+        $this->log('getUserProfile response', [
+            'status' => $response->getStatusCode(),
+            'body' => (string) $response->getBody(),
+        ]);
+
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 

@@ -13,6 +13,7 @@ use Maxs94\Internetmarke\Model\AuthenticationRequest;
 use Maxs94\Internetmarke\Service\ApiVersionResource;
 use Maxs94\Internetmarke\Service\AppResource;
 use Maxs94\Internetmarke\Service\UserResource;
+use Psr\Log\LoggerInterface;
 
 final class Internetmarke
 {
@@ -25,8 +26,15 @@ final class Internetmarke
     private ?ApiVersionResource $apiVersionResource = null;
     private ?AppResource $appResource = null;
 
-    public function __construct(string $clientId, string $clientSecret, string $username, string $password, ?ClientConfig $config = null, ?ClientInterface $guzzle = null)
-    {
+    public function __construct(
+        string $clientId,
+        string $clientSecret,
+        string $username,
+        string $password,
+        private readonly LoggerInterface $logger,
+        ?ClientConfig $config = null,
+        ?ClientInterface $guzzle = null,
+    ) {
         $this->config = $config ?? new ClientConfig();
         $this->guzzle = $guzzle ?? new Client(['base_uri' => $this->config->getBaseUri()]);
 
@@ -47,7 +55,7 @@ final class Internetmarke
     public function getUserResource(): UserResource
     {
         if ($this->userResource === null) {
-            $this->userResource = new UserResource($this->apiClient);
+            $this->userResource = new UserResource($this->apiClient, $this->logger);
         }
 
         return $this->userResource;
@@ -56,7 +64,7 @@ final class Internetmarke
     public function getApiVersionResource(): ApiVersionResource
     {
         if ($this->apiVersionResource === null) {
-            $this->apiVersionResource = new ApiVersionResource($this->apiClient);
+            $this->apiVersionResource = new ApiVersionResource($this->apiClient, $this->logger);
         }
 
         return $this->apiVersionResource;
@@ -65,7 +73,7 @@ final class Internetmarke
     public function getAppResource(): AppResource
     {
         if ($this->appResource === null) {
-            $this->appResource = new AppResource($this->apiClient);
+            $this->appResource = new AppResource($this->apiClient, $this->logger);
         }
 
         return $this->appResource;

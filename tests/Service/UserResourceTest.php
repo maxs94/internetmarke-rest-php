@@ -9,6 +9,7 @@ use Maxs94\Internetmarke\Model\RetrieveUserDataResponse;
 use Maxs94\Internetmarke\Service\UserResource;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @internal
@@ -31,7 +32,9 @@ final class UserResourceTest extends TestCase
             ->willReturn($response)
         ;
 
-        $userResource = new UserResource($apiClient);
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $userResource = new UserResource($apiClient, $logger);
         $result = $userResource->getUserProfile();
 
         $this->assertInstanceOf(RetrieveUserDataResponse::class, $result);

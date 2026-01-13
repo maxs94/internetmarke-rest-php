@@ -9,6 +9,7 @@ use Maxs94\Internetmarke\Model\ChargeWalletResponse;
 use Maxs94\Internetmarke\Service\AppResource;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @internal
@@ -32,7 +33,9 @@ final class AppResourceTest extends TestCase
             ->willReturn($response)
         ;
 
-        $app = new AppResource($apiClient);
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $app = new AppResource($apiClient, $logger);
         $result = $app->chargeWallet(150);
 
         $this->assertInstanceOf(ChargeWalletResponse::class, $result);

@@ -10,6 +10,7 @@ use Maxs94\Internetmarke\Internetmarke;
 use Maxs94\Internetmarke\Service\ApiVersionResource;
 use Maxs94\Internetmarke\Service\UserResource;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @internal
@@ -20,8 +21,9 @@ final class InternetmarkeTest extends TestCase
     {
         $guzzle = $this->createMock(GuzzleClientInterface::class);
         $config = new ClientConfig('');
+        $logger = $this->createMock(LoggerInterface::class);
 
-        $api = new Internetmarke('cid', 'sec', 'user', 'pass', $config, $guzzle);
+        $api = new Internetmarke('cid', 'sec', 'user', 'pass', $logger, $config, $guzzle);
 
         $this->assertInstanceOf(UserResource::class, $api->getUserResource());
         $this->assertInstanceOf(ApiVersionResource::class, $api->getApiVersionResource());

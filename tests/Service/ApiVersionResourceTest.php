@@ -15,6 +15,7 @@ use Maxs94\Internetmarke\Service\ApiVersionResource;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @internal
@@ -78,7 +79,9 @@ final class ApiVersionResourceTest extends TestCase
 
         $apiClient = new ApiClient($guzzle, $tokenProvider, $clientConfig);
 
-        $service = new ApiVersionResource($apiClient);
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $service = new ApiVersionResource($apiClient, $logger);
 
         $dto = $service->getVersion();
 

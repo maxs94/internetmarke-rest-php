@@ -7,13 +7,16 @@ namespace Maxs94\Internetmarke\Service;
 use Maxs94\Internetmarke\Exception\ApiException;
 use Maxs94\Internetmarke\Http\ApiClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractService
 {
     protected ApiClientInterface $apiClient;
 
-    public function __construct(ApiClientInterface $apiClient)
-    {
+    public function __construct(
+        ApiClientInterface $apiClient,
+        protected readonly LoggerInterface $logger,
+    ) {
         $this->apiClient = $apiClient;
     }
 

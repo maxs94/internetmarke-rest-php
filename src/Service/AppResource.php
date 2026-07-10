@@ -168,7 +168,11 @@ final class AppResource extends AbstractService
             $types = [$types];
         }
 
-        $response = $this->apiClient->get('app/catalog', null, ['query' => ['types' => $types]]);
+        // Build query string manually to produce repeated params (types=A&types=B)
+        // instead of PHP's default array encoding (types[0]=A&types[1]=B).
+        $query = implode('&', array_map(fn(string $t) => 'types=' . rawurlencode($t), $types));
+
+        $response = $this->apiClient->get('app/catalog', null, ['query' => $query]);
 
         $this->log('getCatalog response', [
             'status' => $response->getStatusCode(),

@@ -57,6 +57,9 @@ final class Address
 
     public function setAddressLine2(?string $line): self
     {
+        if ($line === '') {
+            $line = null;
+        }
         StringLengthValidator::validate($line, 1, 60, 'addressLine2');
         if ($line !== null) {
             $line = trim($line);

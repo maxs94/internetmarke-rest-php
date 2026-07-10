@@ -34,6 +34,9 @@ final class ShoppingCartPNGRequest
 
     public function setShopOrderId(?string $id): self
     {
+        if ($id === '') {
+            $id = null;
+        }
         StringLengthValidator::validate($id, 1, 18, 'shopOrderId');
         $this->shopOrderId = $id;
 

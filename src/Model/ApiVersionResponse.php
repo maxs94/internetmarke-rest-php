@@ -88,6 +88,7 @@ final class ApiVersionResponse
         return [
             'env' => $this->env,
             'version' => $this->version,
+            'rev' => $this->rev,
             'description' => $this->description,
         ];
     }

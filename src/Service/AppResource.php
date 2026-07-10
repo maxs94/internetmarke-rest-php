@@ -6,10 +6,11 @@ namespace Maxs94\Internetmarke\Service;
 
 use Maxs94\Internetmarke\Model\ChargeWalletResponse;
 use Maxs94\Internetmarke\Model\CheckoutShoppingCartAppResponse;
+use Maxs94\Internetmarke\Model\InitShoppingCartResponse;
 use Maxs94\Internetmarke\Model\RetoureVouchersRequest;
+use Maxs94\Internetmarke\Model\RetoureVouchersResponse;
 use Maxs94\Internetmarke\Model\RetrieveCatalogResponse;
 use Maxs94\Internetmarke\Model\RetrieveRetoureStateResponse;
-use Maxs94\Internetmarke\Model\ShoppingCart;
 use Maxs94\Internetmarke\Model\ShoppingCartPDFRequest;
 use Maxs94\Internetmarke\Model\ShoppingCartPNGRequest;
 
@@ -36,7 +37,7 @@ final class AppResource extends AbstractService
     /**
      * POST /app/shoppingcart
      */
-    public function createShoppingCart(): ShoppingCart
+    public function createShoppingCart(): InitShoppingCartResponse
     {
         $response = $this->apiClient->post('app/shoppingcart');
 
@@ -48,15 +49,16 @@ final class AppResource extends AbstractService
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 
-        return ShoppingCart::fromArray($data);
+        return InitShoppingCartResponse::fromArray($data);
     }
 
     /**
      * POST /app/shoppingcart/pdf
      */
-    public function checkoutShoppingCartAsPDF(ShoppingCartPDFRequest $request): CheckoutShoppingCartAppResponse
+    public function checkoutShoppingCartAsPDF(ShoppingCartPDFRequest $request, bool $validate = false, bool $directCheckout = false): CheckoutShoppingCartAppResponse
     {
-        $response = $this->apiClient->post('app/shoppingcart/pdf', $request);
+        $query = array_filter(['validate' => $validate ?: null, 'directCheckout' => $directCheckout ?: null]);
+        $response = $this->apiClient->post('app/shoppingcart/pdf', $request, empty($query) ? [] : ['query' => $query]);
 
         $this->log('checkoutShoppingCartAsPDF response', [
             'status' => $response->getStatusCode(),
@@ -72,9 +74,10 @@ final class AppResource extends AbstractService
     /**
      * POST /app/shoppingcart/png
      */
-    public function checkoutShoppingCartAsPNG(ShoppingCartPNGRequest $request): CheckoutShoppingCartAppResponse
+    public function checkoutShoppingCartAsPNG(ShoppingCartPNGRequest $request, bool $validate = false, bool $directCheckout = false): CheckoutShoppingCartAppResponse
     {
-        $response = $this->apiClient->post('app/shoppingcart/png', $request);
+        $query = array_filter(['validate' => $validate ?: null, 'directCheckout' => $directCheckout ?: null]);
+        $response = $this->apiClient->post('app/shoppingcart/png', $request, empty($query) ? [] : ['query' => $query]);
 
         $this->log('checkoutShoppingCartAsPNG response', [
             'status' => $response->getStatusCode(),
@@ -90,7 +93,7 @@ final class AppResource extends AbstractService
     /**
      * GET /app/shoppingcart/{shopOrderId}
      */
-    public function getShoppingCart(int $shopOrderId): CheckoutShoppingCartAppResponse
+    public function getShoppingCart(string $shopOrderId): CheckoutShoppingCartAppResponse
     {
         $response = $this->apiClient->get('app/shoppingcart/' . rawurlencode((string) $shopOrderId));
 
@@ -108,9 +111,20 @@ final class AppResource extends AbstractService
     /**
      * GET /app/retoure
      */
-    public function getRetoure(): RetrieveRetoureStateResponse
-    {
-        $response = $this->apiClient->get('app/retoure');
+    public function getRetoure(
+        ?string $shopRetoureId = null,
+        ?int $retoureTransactionId = null,
+        ?\DateTimeInterface $startDate = null,
+        ?\DateTimeInterface $endDate = null,
+    ): RetrieveRetoureStateResponse {
+        $query = array_filter([
+            'shopRetoureId' => $shopRetoureId,
+            'retoureTransactionId' => $retoureTransactionId,
+            'startDate' => $startDate?->format(\DateTimeInterface::ATOM),
+            'endDate' => $endDate?->format(\DateTimeInterface::ATOM),
+        ], static fn ($v) => $v !== null);
+
+        $response = $this->apiClient->get('app/retoure', null, empty($query) ? [] : ['query' => $query]);
 
         $this->log('getRetoure response', [
             'status' => $response->getStatusCode(),
@@ -126,7 +140,7 @@ final class AppResource extends AbstractService
     /**
      * POST /app/retoure
      */
-    public function setRetoure(RetoureVouchersRequest $request): RetrieveRetoureStateResponse
+    public function setRetoure(RetoureVouchersRequest $request): RetoureVouchersResponse
     {
         $response = $this->apiClient->post('app/retoure', $request);
 
@@ -138,13 +152,13 @@ final class AppResource extends AbstractService
         $this->ensureStatusCode($response, [200]);
         $data = $this->decodeJson($response);
 
-        return RetrieveRetoureStateResponse::fromArray($data);
+        return RetoureVouchersResponse::fromArray($data);
     }
 
     /**
-     * GET /app/catalog?types=...
+     * @param array<string> $types
      */
-    public function getCatalog(string $types): RetrieveCatalogResponse
+    public function getCatalog(array $types): RetrieveCatalogResponse
     {
         $response = $this->apiClient->get('app/catalog', null, ['query' => ['types' => $types]]);
 

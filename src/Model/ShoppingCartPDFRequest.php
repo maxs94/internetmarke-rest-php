@@ -14,14 +14,14 @@ final class ShoppingCartPDFRequest
     public const DPI300 = 'DPI300';
     public const DPI203 = 'DPI203';
 
-    public const CREATE_SHIPPING_LIST_NONE = 0;
-    public const CREATE_SHIPPING_LIST_WITHOUT_ADDRESS = 1;
-    public const CREATE_SHIPPING_LIST_WITH_ADDRESS = 2;
+    public const CREATE_SHIPPING_LIST_NONE = '0';
+    public const CREATE_SHIPPING_LIST_WITHOUT_ADDRESS = '1';
+    public const CREATE_SHIPPING_LIST_WITH_ADDRESS = '2';
 
     private ?string $shopOrderId = null;
     private ?int $total = null;
     private ?bool $createManifest = true;
-    private ?int $createShippingList = self::CREATE_SHIPPING_LIST_NONE;
+    private string $createShippingList = self::CREATE_SHIPPING_LIST_NONE;
     private ?string $dpi = self::DPI300;
     private ?int $pageFormatId = 1;
     private ?string $type = self::TYPE;
@@ -65,14 +65,14 @@ final class ShoppingCartPDFRequest
         return $this->createManifest;
     }
 
-    public function setCreateShippingList(?int $value): self
+    public function setCreateShippingList(string $value): self
     {
         $this->createShippingList = $value;
 
         return $this;
     }
 
-    public function getCreateShippingList(): ?int
+    public function getCreateShippingList(): string
     {
         return $this->createShippingList;
     }
@@ -144,7 +144,7 @@ final class ShoppingCartPDFRequest
         $self->setShopOrderId($data['shopOrderId'] ?? $data['shop_order_id'] ?? null);
         $self->setTotal(isset($data['total']) ? (int) $data['total'] : null);
         $self->setCreateManifest(isset($data['createManifest']) ? (bool) $data['createManifest'] : (isset($data['create_manifest']) ? (bool) $data['create_manifest'] : null));
-        $self->setCreateShippingList($data['createShippingList'] ?? $data['create_shipping_list'] ?? null);
+        $self->setCreateShippingList((string) ($data['createShippingList'] ?? $data['create_shipping_list'] ?? self::CREATE_SHIPPING_LIST_NONE));
         $self->setDpi($data['dpi'] ?? null);
         $self->setPageFormatId(isset($data['pageFormatId']) ? (int) $data['pageFormatId'] : (isset($data['page_format_id']) ? (int) $data['page_format_id'] : null));
         $positions = $data['positions'] ?? [];

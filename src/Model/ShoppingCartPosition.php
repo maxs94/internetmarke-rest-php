@@ -114,11 +114,12 @@ final class ShoppingCartPosition
         $self = new self();
         $self->setProductCode(isset($data['productCode']) ? (int) $data['productCode'] : (isset($data['product_code']) ? (int) $data['product_code'] : null));
         $self->setImageID(isset($data['imageID']) ? (int) $data['imageID'] : (isset($data['image_id']) ? (int) $data['image_id'] : null));
-        if (!empty($data['sender'])) {
-            $self->setSender(Address::fromArray((array) $data['sender']));
+        $address = $data['address'] ?? [];
+        if (!empty($address['sender'])) {
+            $self->setSender(Address::fromArray((array) $address['sender']));
         }
-        if (!empty($data['receiver'])) {
-            $self->setreceiver(Address::fromArray((array) $data['receiver']));
+        if (!empty($address['receiver'])) {
+            $self->setReceiver(Address::fromArray((array) $address['receiver']));
         }
         $self->setVoucherLayout($data['voucherLayout'] ?? $data['voucher_layout'] ?? null);
         $self->setPositionType($data['positionType'] ?? $data['position_type'] ?? null);

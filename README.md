@@ -1,112 +1,262 @@
 # Internetmarke PHP Client
 
-## PHP client for the Deutsche Post DHL Internetmarke API.
+PHP client for the **Deutsche Post DHL INTERNETMARKE REST API** (spec v1.30).
 
-### Links 
-
-- [Internetmarke API Documentation (German)](https://www.dhl.de/de/geschaeftskunden/internetmarke/api.html)
-- [DHL Developer Portal (German)](https://entwickler.dhl.de/)
+- [DHL Developer Portal](https://developer.dhl.com/api-reference/deutsche-post-internetmarke-post-paket-deutschland)
 - [Portokasse](https://portokasse.deutschepost.de/portokasse/)
 
-### Documentation
+---
 
-- [AppResource](doc/AppResource.md)
-- [ApiVersionResource](doc/ApiVersionResource.md)
-- [UserResource](doc/UserResource.md)
+## API coverage
 
-### This repository provides:
+| Endpoint | Method | PHP |
+|----------|--------|-----|
+| `GET /` | Health check | `ApiVersionResource::getVersion()` |
+| `POST /user` | Authenticate | handled internally by `TokenProvider` |
+| `GET /user/profile` | User profile | `UserResource::getUserProfile()` |
+| `PUT /app/wallet` | Charge wallet | `AppResource::chargeWallet(int $amount)` |
+| `POST /app/shoppingcart` | Create cart | `AppResource::createShoppingCart()` |
+| `GET /app/shoppingcart/{shopOrderId}` | Retrieve cart | `AppResource::getShoppingCart(string $shopOrderId)` |
+| `POST /app/shoppingcart/pdf` | Checkout PDF | `AppResource::checkoutShoppingCartAsPDF(...)` |
+| `POST /app/shoppingcart/png` | Checkout PNG | `AppResource::checkoutShoppingCartAsPNG(...)` |
+| `GET /app/retoure` | Retoure state | `AppResource::getRetoure(...)` |
+| `POST /app/retoure` | Request retoure | `AppResource::setRetoure(RetoureVouchersRequest $r)` |
+| `GET /app/catalog` | Catalog | `AppResource::getCatalog(array $types)` |
 
-- HTTP client and service-layer classes to call the Internetmarke API. See documentation: [AppResource](doc/AppResource.md), [ApiVersionResource](doc/ApiVersionResource.md), [UserResource](doc/UserResource.md).
-- DTO models for request/response payloads.
-- Token provider for OAuth-like authentication.
-- PHPUnit tests.
+---
 
-### Highlights of recent changes
+## Requirements
 
-- Base URI for requests is centralized in `ClientConfig`
-- `ApiClient` implements `ApiClientInterface`.
-- `TokenProvider` implements `TokenProviderInterface`.
-- `AuthenticationRequest` DTO introduced and used by `TokenProvider` and `UserResource`.
-- Tests were updated to use `ClientConfig('')` to avoid automatic base URI prefixing during unit tests.
-- Several classes and tests were adapted to be more testable and type-safe.
-- added Makefile for common tasks (install, test, etc.)
-- added Internetmarke facade for easy setup and usage.
-
-### Requirements
-
-- PHP 8.1+ (or the project's required PHP version)
+- PHP 8.1+
 - Composer
-- client (provided via composer)
-- PHPUnit (dev dependency)
+- GuzzleHTTP 7+ (pulled in automatically)
 
-### Installation
+---
 
-Use the included Make targets to install dependencies:
+## Installation
 
 ```bash
-# install PHP dependencies
-make install
+composer require maxs94/internetmarke-rest-php
 ```
 
-(If you prefer running composer directly, `composer install` is equivalent.)
+---
 
-### Usage
-
-The simplest way to get started is to use the `Internetmarke` facade class, which handles configuration, token provision, and API client setup for you:
+## Quick start
 
 ```php
 use Maxs94\Internetmarke\Internetmarke;
 
-$internetmarke = new Internetmarke(
-    'your-client-id',
-    'your-client-secret',
-    'your-username',
-    'your-password'
+$im = new Internetmarke(
+    clientId:     'your-client-id',
+    clientSecret: 'your-client-secret',
+    username:     'your-username',
+    password:     'your-password',
 );
 
-// get API version information
-var_dump($internetmarke->getApiVersionResource()->getVersion());
+// wallet balance is included in the authentication response
+$balance = $im->getTokenProvider()->getAuthentication()->getWalletBalance();
 
-// walletBalance can be retrieved from the tokenProvider,
-// as DHL includes it in the authentication response
-var_dump($internetmarke->getTokenProvider()->getAuthentication()->getWalletBalance());
+// user profile
+$profile = $im->getUserResource()->getUserProfile();
+echo $profile->getFirstname() . ' ' . $profile->getLastname();
 
-// get user profile
-var_dump($internetmarke->getUserResource()->getUserProfile());
-
+// API version / health check
+$version = $im->getApiVersionResource()->getVersion();
+echo $version->getVersion(); // e.g. v1.1.4
 ```
 
-### Creating a label
-To create and checkout a label, see the [AppResource documentation](doc/AppResource.md) for details and code examples.
+---
 
-### Testing
+## Creating a label (PDF)
 
-Run the test suite with the Make targets:
+```php
+use Maxs94\Internetmarke\Model\Address;
+use Maxs94\Internetmarke\Model\Position;
+use Maxs94\Internetmarke\Model\ShoppingCartPDFRequest;
+use Maxs94\Internetmarke\Model\ShoppingCartPosition;
+
+$app = $im->getAppResource();
+
+// 1. Create a cart and get the shopOrderId
+$cart = $app->createShoppingCart();
+
+// 2. Build the checkout request
+$request = new ShoppingCartPDFRequest();
+$request->setShopOrderId($cart->getShopOrderId());
+$request->setTotal(95); // euro cents — must match the sum of your positions
+
+// 3. Build a position (one stamp)
+$position = new ShoppingCartPosition();
+$position->setProductCode(1);                              // product code from Deutsche Post
+$position->setVoucherLayout(ShoppingCartPosition::VOUCHER_LAYOUT_ADDRESS_ZONE);
+$position->setPosition(new Position(1, 1, 1));             // x, y, page
+
+$sender = (new Address())
+    ->setName('Demo Corp')
+    ->setAddressLine1('Somewhere Street 42')
+    ->setPostalCode('94032')
+    ->setCity('Passau')
+    ->setCountry('DEU');
+
+$recipient = (new Address())
+    ->setName('Jane Doe')
+    ->setAddressLine1('Anywhere Avenue 7')
+    ->setPostalCode('10115')
+    ->setCity('Berlin')
+    ->setCountry('DEU');
+
+$position->setSender($sender);
+$position->setReceiver($recipient);
+$request->setPositions([$position]);
+
+// 4. Checkout
+$result = $app->checkoutShoppingCartAsPDF($request);
+
+$pdfLink      = $result->getLink();           // link to the generated PDF
+$manifestLink = $result->getManifestLink();   // posting receipt, if requested
+$walletLeft   = $result->getWalletBallance(); // remaining balance in euro cents
+```
+
+For PNG labels, replace `ShoppingCartPDFRequest` with `ShoppingCartPNGRequest` and call `checkoutShoppingCartAsPNG()`.
+
+Both checkout methods accept two optional boolean parameters:
+
+```php
+$app->checkoutShoppingCartAsPDF($request, validate: true);         // preview — no purchase
+$app->checkoutShoppingCartAsPDF($request, directCheckout: true);   // skip separate checkout call
+```
+
+---
+
+## Catalog
+
+```php
+use Maxs94\Internetmarke\Model\RetrieveCatalogResponse;
+
+// motif images
+$catalog = $app->getCatalog([RetrieveCatalogResponse::TYPE_PUBLIC]);
+
+// page formats (needed for PDF pageFormatId)
+$formats = $app->getCatalog([RetrieveCatalogResponse::TYPE_PAGE_FORMATS]);
+
+// both at once
+$all = $app->getCatalog([
+    RetrieveCatalogResponse::TYPE_PUBLIC,
+    RetrieveCatalogResponse::TYPE_PAGE_FORMATS,
+]);
+```
+
+---
+
+## Wallet
+
+```php
+$app->chargeWallet(500); // charge 5.00 EUR (amount in euro cents, minimum 1)
+```
+
+---
+
+## Retoure
+
+```php
+use Maxs94\Internetmarke\Model\RetoureVouchersRequest;
+use Maxs94\Internetmarke\Model\ShoppingCart;
+use Maxs94\Internetmarke\Model\Voucher;
+
+// query retoure state with optional filters
+$state = $app->getRetoure(
+    shopRetoureId:          '12345',
+    retoureTransactionId:   null,
+    startDate:              new \DateTimeImmutable('2024-01-01'),
+    endDate:                new \DateTimeImmutable('2024-12-31'),
+);
+
+// request a refund
+$voucher = Voucher::fromArray(['voucherId' => 'A00123C039...', 'trackId' => '']);
+$cart = (new ShoppingCart())->setShopOrderId('98276337')->setVoucherList([$voucher]);
+
+$request = new RetoureVouchersRequest();
+$request->setShoppingCart($cart);
+
+$response = $app->setRetoure($request);
+echo $response->getShopRetoureId();
+echo $response->getRetoureTransactionId();
+```
+
+---
+
+## Validation
+
+All request-side models validate their fields against the OpenAPI spec constraints
+and throw `\InvalidArgumentException` on violation. Validation is eager — it fires
+in the setter, so you get an exception at the point of the bad assignment.
+
+| Constraint | Examples |
+|------------|---------|
+| String length | `Address::setPostalCode` (exactly 5), `Address::setCountry` (exactly 3), `shopOrderId` (1–18) |
+| Integer minimum | `chargeWallet $amount` (≥1), `ShoppingCartPosition::productCode` (≥1), `VoucherPosition` coords (≥1) |
+| Enum | `ShoppingCartPosition::voucherLayout`, `dpi`, `createShippingList` |
+| Array min items | `ShoppingCart::setVoucherList` (≥1 item) |
+
+---
+
+## Sandbox / custom base URI
+
+```php
+use Maxs94\Internetmarke\Config\ClientConfig;
+use Maxs94\Internetmarke\Internetmarke;
+
+$im = new Internetmarke(
+    clientId:     'your-client-id',
+    clientSecret: 'your-client-secret',
+    username:     'your-username',
+    password:     'your-password',
+    config:       new ClientConfig('https://api-eu.dhl.com/post/de/shipping/im/v1'), // default
+);
+```
+
+The default base URI points to production. Use `ClientConfig` with a different URL for sandbox or local testing.
+
+---
+
+## Architecture
+
+```
+src/
+├── Authentication/   TokenProvider — handles OAuth token lifecycle
+├── Config/           ClientConfig  — base URI
+├── Exception/        ApiException
+├── Http/             ApiClient, ApiClientInterface, Serializer
+├── Model/            DTOs for all request/response payloads
+├── Service/          ApiVersionResource, AppResource, UserResource
+└── Validator/        StringLengthValidator, IntegerMinValidator, EnumValidator
+```
+
+`TokenProvider` and `ApiClient` both implement interfaces (`TokenProviderInterface`, `ApiClientInterface`), making them straightforward to swap in tests or for custom HTTP adapters.
+
+---
+
+## Development
 
 ```bash
-# or explicitly run phpunit
-make phpunit
+composer install
 
-# run static analysis
-make phpstan
-
-# fix coding standards issues
-make csfix
+make phpunit    # run tests
+make phpstan    # static analysis
+make csfix      # fix code style
 ```
 
-### Development notes
+---
 
-- Prefer `ClientConfig` for all places where a base URI must be configured — it centralizes the setting.
-- The `ApiClientInterface` and `TokenProviderInterface` allow you to provide your own implementations for special cases (e.g. custom HTTP adapters, testing).
-- If you need to mock the token provider or API client in tests, mock the interface types (`TokenProviderInterface` and `ApiClientInterface`) instead of final concrete classes.
+## Contributing
 
-### Contributing
+- Add tests for any new behaviour.
+- Run `make phpunit`, `make phpstan`, and `make csfix` before opening a PR — they must pass.
+- Keep backward-compatibility in mind; update docs when making breaking changes.
 
-- Fork the repo, create a branch, add tests for any new behavior and open a pull request.
-- Keep backward-compatibility in mind; update the README and tests when making breaking changes.
-- Run `make phpunit`, `make csfix` and `make phpstan` before submitting a PR - they should pass without errors.
- 
-### License
+---
 
-- Please see the LICENSE file in the repository.
+## License
+
+MIT — see [LICENSE](LICENSE).
 

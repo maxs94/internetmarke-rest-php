@@ -41,7 +41,7 @@ $appResource = $internetmarke->getAppResource();
 
 #### createShoppingCart
 
-Creates a new shopping cart and returns a ShoppingCart model.
+Creates a new shopping cart and returns an `InitShoppingCartResponse` containing the `shopOrderId`.
 
 #### getShoppingCart
 
@@ -93,36 +93,39 @@ var_dump($result);
 // get download link to PDF or PNG for the label
 $link = $result->getLink();
 
-// manifest
-$manifest = $result->getManifest();
+// manifest link (posting receipt)
+$manifest = $result->getManifestLink();
 
 // shoppingCart
 $shoppingCart = $result->getShoppingCart();
 
-// wallentBalance after Transaction
-$walletBalance = $result->getWalletBalance();
+// wallet balance after transaction (euro cents)
+$walletBalance = $result->getWalletBallance();
 ```
 
 ### getCatalog
 
 ```php
 // get all available motives and images
-$catalog = $appResource->getCatalog(RetrieveCatalogResponse::TYPE_PUBLIC);
+$catalog = $appResource->getCatalog([RetrieveCatalogResponse::TYPE_PUBLIC]);
 var_dump($catalog);
 
 // get all available page formats
-$pageFormats = $appResource->getCatalog(RetrieveCatalogResponse::TYPE_PAGE_FORMATS);
+$pageFormats = $appResource->getCatalog([RetrieveCatalogResponse::TYPE_PAGE_FORMATS]);
 var_dump($pageFormats);
 ```
 
 ### getRetoure
 
 ```php
-$result = $appResource->getRetoure();
+$result = $appResource->getRetoure(
+    shopRetoureId:        '12345',       // optional
+    retoureTransactionId: null,          // optional
+    startDate:            new \DateTimeImmutable('2024-01-01'), // optional
+    endDate:              new \DateTimeImmutable('2024-12-31'), // optional
+);
 var_dump($result);
 ```
 
 ### setRetoure
-
-(implemented, but untested)
 

@@ -160,10 +160,14 @@ final class AppResource extends AbstractService
     }
 
     /**
-     * @param array<string> $types
+     * @param string|array<string> $types
      */
-    public function getCatalog(array $types): RetrieveCatalogResponse
+    public function getCatalog(string|array $types): RetrieveCatalogResponse
     {
+        if (is_string($types)) {
+            $types = [$types];
+        }
+
         $response = $this->apiClient->get('app/catalog', null, ['query' => ['types' => $types]]);
 
         $this->log('getCatalog response', [

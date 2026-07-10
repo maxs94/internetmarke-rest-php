@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
+use Maxs94\Internetmarke\Validator\StringLengthValidator;
+
 final class Address
 {
     private ?string $name = null;
@@ -16,6 +18,7 @@ final class Address
 
     public function setName(string $name): self
     {
+        StringLengthValidator::validate($name, 1, 50, 'name');
         $this->name = $name;
 
         return $this;
@@ -28,6 +31,7 @@ final class Address
 
     public function setAdditionalName(?string $additionalName): self
     {
+        StringLengthValidator::validate($additionalName, 0, 40, 'additionalName');
         $this->additionalName = $additionalName;
 
         return $this;
@@ -40,6 +44,7 @@ final class Address
 
     public function setAddressLine1(string $line): self
     {
+        StringLengthValidator::validate($line, 1, 50, 'addressLine1');
         $this->addressLine1 = trim($line);
 
         return $this;
@@ -52,6 +57,7 @@ final class Address
 
     public function setAddressLine2(?string $line): self
     {
+        StringLengthValidator::validate($line, 1, 60, 'addressLine2');
         if ($line !== null) {
             $line = trim($line);
         }
@@ -68,6 +74,7 @@ final class Address
 
     public function setPostalCode(string $code): self
     {
+        StringLengthValidator::validate($code, 5, 5, 'postalCode');
         $this->postalCode = trim($code);
 
         return $this;
@@ -80,6 +87,7 @@ final class Address
 
     public function setCity(string $city): self
     {
+        StringLengthValidator::validate($city, 1, 40, 'city');
         $this->city = trim($city);
 
         return $this;
@@ -92,6 +100,7 @@ final class Address
 
     public function setCountry(string $country): self
     {
+        StringLengthValidator::validate($country, 3, 3, 'country');
         $this->country = trim($country);
 
         return $this;

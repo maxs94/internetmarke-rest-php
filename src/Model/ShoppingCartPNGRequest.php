@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
+use Maxs94\Internetmarke\Validator\EnumValidator;
+use Maxs94\Internetmarke\Validator\StringLengthValidator;
+
 final class ShoppingCartPNGRequest
 {
     public const TYPE = 'AppShoppingCartPNGRequest';
@@ -31,6 +34,7 @@ final class ShoppingCartPNGRequest
 
     public function setShopOrderId(?string $id): self
     {
+        StringLengthValidator::validate($id, 1, 18, 'shopOrderId');
         $this->shopOrderId = $id;
 
         return $this;
@@ -67,6 +71,7 @@ final class ShoppingCartPNGRequest
 
     public function setCreateShippingList(string $value): self
     {
+        EnumValidator::validate($value, [self::CREATE_SHIPPING_LIST_NONE, self::CREATE_SHIPPING_LIST_WITHOUT_ADDRESS, self::CREATE_SHIPPING_LIST_WITH_ADDRESS], 'createShippingList');
         $this->createShippingList = $value;
 
         return $this;
@@ -79,6 +84,7 @@ final class ShoppingCartPNGRequest
 
     public function setDpi(?string $dpi): self
     {
+        EnumValidator::validate($dpi, [self::DPI300, self::DPI203], 'dpi');
         $this->dpi = $dpi;
 
         return $this;

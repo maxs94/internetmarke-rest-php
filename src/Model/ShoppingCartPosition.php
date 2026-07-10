@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
+use Maxs94\Internetmarke\Validator\EnumValidator;
+use Maxs94\Internetmarke\Validator\IntegerMinValidator;
+
 final class ShoppingCartPosition
 {
     public const VOUCHER_LAYOUT_ADDRESS_ZONE = 'ADDRESS_ZONE';
@@ -24,6 +27,7 @@ final class ShoppingCartPosition
 
     public function setProductCode(?int $code): self
     {
+        IntegerMinValidator::validate($code, 1, 'productCode');
         $this->productCode = $code;
 
         return $this;
@@ -72,6 +76,7 @@ final class ShoppingCartPosition
 
     public function setVoucherLayout(?string $layout): self
     {
+        EnumValidator::validate($layout, [self::VOUCHER_LAYOUT_ADDRESS_ZONE, self::VOUCHER_LAYOUT_FRANKING_ZONE], 'voucherLayout');
         $this->voucherLayout = $layout;
 
         return $this;

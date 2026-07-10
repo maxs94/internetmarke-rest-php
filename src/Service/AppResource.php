@@ -13,6 +13,8 @@ use Maxs94\Internetmarke\Model\RetrieveCatalogResponse;
 use Maxs94\Internetmarke\Model\RetrieveRetoureStateResponse;
 use Maxs94\Internetmarke\Model\ShoppingCartPDFRequest;
 use Maxs94\Internetmarke\Model\ShoppingCartPNGRequest;
+use Maxs94\Internetmarke\Validator\IntegerMinValidator;
+use Maxs94\Internetmarke\Validator\StringLengthValidator;
 
 final class AppResource extends AbstractService
 {
@@ -21,6 +23,7 @@ final class AppResource extends AbstractService
      */
     public function chargeWallet(int $amount): ChargeWalletResponse
     {
+        IntegerMinValidator::validate($amount, 1, 'amount');
         $response = $this->apiClient->put('app/wallet', null, ['query' => ['amount' => $amount]]);
 
         $this->log('chargeWallet response', [
@@ -95,7 +98,8 @@ final class AppResource extends AbstractService
      */
     public function getShoppingCart(string $shopOrderId): CheckoutShoppingCartAppResponse
     {
-        $response = $this->apiClient->get('app/shoppingcart/' . rawurlencode((string) $shopOrderId));
+        StringLengthValidator::validate($shopOrderId, 1, 18, 'shopOrderId');
+        $response = $this->apiClient->get('app/shoppingcart/' . rawurlencode($shopOrderId));
 
         $this->log('getShoppingCart response', [
             'status' => $response->getStatusCode(),

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
+use Maxs94\Internetmarke\Validator\StringLengthValidator;
+
 final class ShoppingCart
 {
     private ?string $shopOrderId = null;
@@ -13,6 +15,7 @@ final class ShoppingCart
 
     public function setShopOrderId(?string $id): self
     {
+        StringLengthValidator::validate($id, 1, 18, 'shopOrderId');
         $this->shopOrderId = $id;
 
         return $this;
@@ -36,6 +39,10 @@ final class ShoppingCart
      */
     public function setVoucherList(array $voucherList): self
     {
+        if (count($voucherList) < 1) {
+            throw new \InvalidArgumentException('voucherList must contain at least 1 item.');
+        }
+
         $this->voucherList = $voucherList;
 
         return $this;

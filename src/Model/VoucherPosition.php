@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Maxs94\Internetmarke\Model;
 
+use Maxs94\Internetmarke\Validator\IntegerMinValidator;
+
 final class VoucherPosition
 {
     private ?int $labelX = null;
@@ -12,6 +14,7 @@ final class VoucherPosition
 
     public function setLabelX(?int $x): self
     {
+        IntegerMinValidator::validate($x, 1, 'labelX');
         $this->labelX = $x;
 
         return $this;
@@ -24,6 +27,7 @@ final class VoucherPosition
 
     public function setLabelY(?int $y): self
     {
+        IntegerMinValidator::validate($y, 1, 'labelY');
         $this->labelY = $y;
 
         return $this;
@@ -36,6 +40,7 @@ final class VoucherPosition
 
     public function setPage(?int $page): self
     {
+        IntegerMinValidator::validate($page, 1, 'page');
         $this->page = $page;
 
         return $this;

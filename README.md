@@ -1,6 +1,6 @@
 # Deutsche Post Internetmarke REST Client for PHP
 
-Create and download Internetmarke postage labels directly from PHP using the Deutsche Post REST API.
+A modern PHP 8.1+ REST client for the Deutsche Post Internetmarke API. Create postage labels, access Portokasse, and integrate Internetmarke into your PHP applications.
 
 [![Packagist Version](https://img.shields.io/packagist/v/maxs94/internetmarke-rest-php)](https://packagist.org/packages/maxs94/internetmarke-rest-php)
 [![PHP 8.1+](https://img.shields.io/packagist/php-v/maxs94/internetmarke-rest-php)](https://packagist.org/packages/maxs94/internetmarke-rest-php)
